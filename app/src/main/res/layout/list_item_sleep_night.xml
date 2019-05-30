@@ -6,12 +6,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!-- TODO (01) Add an ImageView and set its id to quality_image. -->
 
-    <!-- TODO (02) Add a TextView to the right of quality_image and set its id to sleep_length. -->
 
-    <!-- TODO (03) Add a TextView below sleep_length and set its id to quality_string. -->
 
+
+    <!-- COMPLETED (01) Add an ImageView and set its id to quality_image. -->
     <ImageView
         android:id="@+id/quality_image"
         android:layout_width="@dimen/icon_size"
@@ -25,6 +24,7 @@
         android:contentDescription="@string/icon_sleepquality_content_description"
         tools:srcCompat="@drawable/ic_sleep_5" />
 
+    <!-- COMPLETED (02) Add a TextView to the right of quality_image and set its id to sleep_length. -->
     <TextView
         android:id="@+id/sleep_length"
         android:layout_width="0dp"
@@ -37,6 +37,7 @@
         app:layout_constraintTop_toTopOf="@id/quality_image"
         tools:text="Wednesday" />
 
+    <!-- COMPLETED (03) Add a TextView below sleep_length and set its id to quality_string. -->
     <TextView
         android:id="@+id/quality_string"
         android:layout_width="0dp"
