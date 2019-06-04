@@ -44,7 +44,7 @@ class SleepNightAdapter : ListAdapter<SleepNight,
         : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SleepNight) {
-            // TODO (02) Replace the code below with a single binding to the SleepNight item,
+            // COMPLETED (02) Replace the code below with a single binding to the SleepNight item,
             // followed by executePendingBindings().
             binding.sleep = item
             // When using BindingAdapters in a RecylcerView, it's a good idea to call
