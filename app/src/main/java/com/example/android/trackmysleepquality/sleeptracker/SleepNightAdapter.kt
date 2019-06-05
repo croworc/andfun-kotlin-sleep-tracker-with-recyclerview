@@ -76,4 +76,7 @@ class SleepNightDiffCallback : DiffUtil.ItemCallback<SleepNight>() {
     }
 }
 
-// TODO (01) Create a new class called SleepNightListener.
+// COMPLETED (01) Create a new class called SleepNightListener.
+class SleepNightListener(val clickListener: (sleepId: Long) -> Unit ) {
+    fun onClick(night: SleepNight) = clickListener(night.nightId)
+}
