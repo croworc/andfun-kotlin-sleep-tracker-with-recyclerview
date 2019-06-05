@@ -32,11 +32,11 @@ class SleepNightAdapter(val clickListener: SleepNightListener) : ListAdapter<Sle
         val item = getItem(position)
 
         // COMPLETED (05) Add clickListener parameter to holder.bind().
-        holder.bind(item, clickListener)
+        holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+        return ViewHolder.from(parent, clickListener)
     }
 
     class ViewHolder private constructor(val binding: ListItemSleepNightBinding)
@@ -44,16 +44,17 @@ class SleepNightAdapter(val clickListener: SleepNightListener) : ListAdapter<Sle
 
         // COMPLETED (06) Add a clickListener parameter to the bind() function,
         // and add a binding for the clickListener.
-        fun bind(item: SleepNight, clickListener: SleepNightListener) {
+        fun bind(item: SleepNight) {
             binding.sleep = item
-            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup, onClickListener: SleepNightListener): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemSleepNightBinding.inflate(layoutInflater, parent, false)
+                // Attach the item click listener
+                binding.clickListener = onClickListener
 
                 return ViewHolder(binding)
             }
