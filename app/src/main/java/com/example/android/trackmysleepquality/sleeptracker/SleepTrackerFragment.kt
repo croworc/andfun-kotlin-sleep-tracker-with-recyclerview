@@ -25,10 +25,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepTrackerBinding
 import com.google.android.material.snackbar.Snackbar
+
+/* Number of columns to use in GridLayoutManager */
+const val SPAN_COUNT = 3
 
 /**
  * A fragment with buttons to record start and end times for sleep, which are saved in
@@ -36,6 +40,7 @@ import com.google.android.material.snackbar.Snackbar
  * (Because we have not learned about RecyclerView yet.)
  */
 class SleepTrackerFragment : Fragment() {
+
 
     /**
      * Called when the Fragment is ready to display content to the screen.
@@ -97,7 +102,9 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
-        // TODO (02) Create a GridLayoutManager spanning 3 columns and bind it to the RecyclerView.
+        // COMPLETED (02) Create a GridLayoutManager spanning 3 columns and bind it to the RecyclerView.
+        val manager = GridLayoutManager(activity, SPAN_COUNT)
+        binding.sleepList.layoutManager = manager
 
         val adapter = SleepNightAdapter()
         binding.sleepList.adapter = adapter
