@@ -129,11 +129,22 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    // TODO (03) Add an encapsulated navigateToSleepDataQuality LiveData, that changes
+    // COMPLETED (03) Add an encapsulated navigateToSleepDataQuality LiveData, that changes
     // when you want to navigate.
+    // For clarity, I've named it differently, so it's unambiguous where we want to go to.
+    private val _navigateToSleepDetails = MutableLiveData<Long>()
+    val navigateToSleepDetails: LiveData<Long>
+        get() = _navigateToSleepDetails
 
-    // TODO (04) Define onSleepNightClicked() and onSleepDataQualityNavigated() functions
+    // COMPLETED (04) Define onSleepNightClicked() and onSleepDataQualityNavigated() functions
     // for initiating and completing navigation.
+    fun onSleepNightClicked(nightId: Long) {
+        _navigateToSleepDetails.value = nightId
+    }
+
+    fun onSleepDetailsNavigated() {
+        _navigateToSleepDetails.value = null
+    }
 
     init {
         initializeTonight()
