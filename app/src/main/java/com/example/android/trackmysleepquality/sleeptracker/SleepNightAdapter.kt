@@ -74,5 +74,9 @@ class SleepNightDiffCallback : DiffUtil.ItemCallback<SleepNight>() {
 }
 
 class SleepNightListener(val clickListener: (sleepId: Long) -> Unit) {
+    // This listener's onClick() function delegates the work to the passed in
+    // lambda and passes on the db"s night ID from the current SleepNight object
+    // (the one SleepNight that's associated w/ the list item in the grid which the user
+    // has just clicked).
     fun onClick(night: SleepNight) = clickListener(night.nightId)
 }
