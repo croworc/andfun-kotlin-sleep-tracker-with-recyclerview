@@ -33,7 +33,12 @@
             app:destination="@id/sleep_quality_fragment"
             app:enterAnim="@anim/slide_in_right"
             app:popEnterAnim="@anim/slide_in_right" />
-        <!-- TODO (06) Add an action for navigating to sleep_datail_fragment.-->
+        <!-- COMPLETED (06) Add an action for navigating to sleep_datail_fragment.-->
+        <action
+            android:id="@+id/action_sleepTrackerFragment_to_sleepDetailsFragment"
+            app:destination="@id/sleep_detail_fragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:popEnterAnim="@anim/slide_in_right" />
     </fragment>
 
     <fragment
