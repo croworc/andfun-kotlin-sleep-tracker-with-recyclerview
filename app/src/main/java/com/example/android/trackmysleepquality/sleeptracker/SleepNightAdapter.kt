@@ -96,5 +96,25 @@ class SleepNightListener(val clickListener: (sleepId: Long) -> Unit) {
     fun onClick(night: SleepNight) = clickListener(night.nightId)
 }
 
-// TODO (01) Add a sealed class called DataItem,
+// COMPLETED (01) Add a sealed class called DataItem,
 // containing a SleepNightItem data class, and a Header object.
+/**
+ * Class DataItem represents a single item that can be displayed in the RecyclerView.
+ * Defines two concrete subclasses:
+ *   - SleepNightItem: a wrapper for a SleepNight object, and
+ *   - Header: a header singleton object
+ * Both subclasses override an id property; in the case of SleepNightItem that's just the nightId,
+ * in case of the (only) header, its a constant value.
+ */
+sealed class DataItem {
+
+    abstract val id: Long
+
+    data class SleepNightItem(val sleepNight: SleepNight): DataItem() {
+        override val id = sleepNight.nightId
+    }
+
+    object Header: DataItem() {
+        override val id = Long.MIN_VALUE
+    }
+} // close class DataItem
