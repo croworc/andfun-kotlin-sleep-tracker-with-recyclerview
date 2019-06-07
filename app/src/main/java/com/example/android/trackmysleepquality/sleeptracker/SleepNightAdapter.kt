@@ -17,10 +17,12 @@
 package com.example.android.trackmysleepquality.sleeptracker
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.android.trackmysleepquality.R
 import com.example.android.trackmysleepquality.database.SleepNight
 import com.example.android.trackmysleepquality.databinding.ListItemSleepNightBinding
 
@@ -51,7 +53,17 @@ class SleepNightAdapter(val clickListener: SleepNightListener) : ListAdapter<Sle
         return ViewHolder.from(parent)
     }
 
-    // TODO (02) Copy and paste the TextViewHolder class from the exercise.
+    // COMPLETED (02) Copy and paste the TextViewHolder class from the exercise.
+    class TextViewHolder private constructor(rootView: View): RecyclerView.ViewHolder(rootView) {
+        companion object {
+            fun from(parent: ViewGroup): TextViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val view = layoutInflater.inflate(R.layout.header, parent, false)
+
+                return TextViewHolder(view)
+            }
+        }
+    } // close class TextViewHolder
 
     // TODO (07) override getItemViewType() and check whether the item is a Header or a SleepNight.
 
