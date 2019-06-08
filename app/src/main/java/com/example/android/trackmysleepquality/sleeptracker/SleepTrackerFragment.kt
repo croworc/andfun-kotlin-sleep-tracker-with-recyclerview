@@ -20,6 +20,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -108,7 +109,7 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
-        val manager = GridLayoutManager(activity, 3)
+        @NonNull val manager = GridLayoutManager(activity, 3)
         binding.sleepList.layoutManager = manager
 
         val adapter = SleepNightAdapter(SleepNightListener { nightId ->
@@ -118,9 +119,9 @@ class SleepTrackerFragment : Fragment() {
         binding.sleepList.adapter = adapter
 
         sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer {
-            it?.let {
-                // TODO (11) Replace submitList call with addHeaderAndSubmitList.
-                adapter.submitList(it)
+            it?.let { list ->
+                // COMPLETED (11) Replace submitList call with addHeaderAndSubmitList.
+                adapter.addHeaderAndSubmitList(list)
             }
         })
 
