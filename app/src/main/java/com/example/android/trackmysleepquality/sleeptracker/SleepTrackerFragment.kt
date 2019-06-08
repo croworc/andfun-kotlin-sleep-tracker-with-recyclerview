@@ -38,6 +38,11 @@ import com.google.android.material.snackbar.Snackbar
  */
 class SleepTrackerFragment : Fragment() {
 
+    // Constants for the header item and data item span counts
+    private val POSITION_HEADER       = 0
+    private val SPAN_COUNT_HEADER     = 3
+    private val SPAN_COUNT_SLEEP_ITEM = 1
+
     /**
      * Called when the Fragment is ready to display content to the screen.
      *
@@ -109,10 +114,15 @@ class SleepTrackerFragment : Fragment() {
         })
 
         val manager = GridLayoutManager(activity, 3)
-        binding.sleepList.layoutManager = manager
-
-        // TODO (01) Create a SpanSizeLookup object that returns the correct
+        // COMPLETED (01) Create a SpanSizeLookup object that returns the correct
         // span size for each position, and assign it to manager.spanSizeLookup.
+        manager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int = when (position) {
+                POSITION_HEADER -> SPAN_COUNT_HEADER
+                else            -> SPAN_COUNT_SLEEP_ITEM
+            }
+        }
+        binding.sleepList.layoutManager = manager
 
         val adapter = SleepNightAdapter(SleepNightListener { nightId ->
             sleepTrackerViewModel.onSleepNightClicked(nightId)
