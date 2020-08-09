@@ -23,7 +23,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.trackmysleepquality.R
@@ -36,8 +36,7 @@ const val SPAN_COUNT = 3
 
 /**
  * A fragment with buttons to record start and end times for sleep, which are saved in
- * a database. Cumulative data is displayed in a simple scrollable TextView.
- * (Because we have not learned about RecyclerView yet.)
+ * a database. Cumulative data is displayed in a RecyclerView.
  */
 class SleepTrackerFragment : Fragment() {
 
@@ -60,20 +59,19 @@ class SleepTrackerFragment : Fragment() {
 
         val viewModelFactory = SleepTrackerViewModelFactory(dataSource, application)
 
-        val sleepTrackerViewModel =
-                ViewModelProviders.of(
-                        this, viewModelFactory).get(SleepTrackerViewModel::class.java)
+        val sleepTrackerViewModel = ViewModelProvider(this, viewModelFactory)
+                .get(SleepTrackerViewModel::class.java)
 
         binding.sleepTrackerViewModel = sleepTrackerViewModel
 
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
 
         // Add an Observer on the state variable for showing a Snackbar message
         // when the CLEAR button is pressed.
-        sleepTrackerViewModel.showSnackBarEvent.observe(this, Observer {
-            if (it == true) { // Observed state is true.
+        sleepTrackerViewModel.showSnackBarEvent.observe(viewLifecycleOwner, Observer {
+            if (true == it) { // Observed state is true.
                 Snackbar.make(
-                        activity!!.findViewById(android.R.id.content),
+                        requireActivity().findViewById(android.R.id.content),
                         getString(R.string.cleared_message),
                         Snackbar.LENGTH_SHORT // How long to display the message.
                 ).show()
@@ -84,7 +82,7 @@ class SleepTrackerFragment : Fragment() {
         })
 
         // Add an Observer on the state variable for Navigating when STOP button is pressed.
-        sleepTrackerViewModel.navigateToSleepQuality.observe(this, Observer { night ->
+        sleepTrackerViewModel.navigateToSleepQuality.observe(viewLifecycleOwner, Observer { night ->
             night?.let {
                 // We need to get the navController from this, because button is not ready, and it
                 // just has to be a view. For some reason, this only matters if we hit stop again
