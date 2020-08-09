@@ -23,7 +23,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
-import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.*
 
 /**
@@ -53,13 +52,6 @@ class SleepTrackerViewModel(
     private var tonight = MutableLiveData<SleepNight?>()
 
     val nights = database.getAllNights()
-
-    /**
-     * Converted nights to Spanned for displaying.
-     */
-    val nightsString = Transformations.map(nights) { nights ->
-        formatNights(nights, application.resources)
-    }
 
     /**
      * If tonight has not been set, then the START button should be visible.
@@ -129,16 +121,16 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
-    val navigateToSleepDataQuality
-        get() = _navigateToSleepDataQuality
+    private val _navigateToSleepDetails = MutableLiveData<Long>()
+    val navigateToSleepDetails
+        get() = _navigateToSleepDetails
 
     fun onSleepNightClicked(id: Long) {
-        _navigateToSleepDataQuality.value = id
+        _navigateToSleepDetails.value = id
     }
 
-    fun onSleepDataQualityNavigated() {
-        _navigateToSleepDataQuality.value = null
+    fun onSleepDetailsNavigated() {
+        _navigateToSleepDetails.value = null
     }
 
     init {
