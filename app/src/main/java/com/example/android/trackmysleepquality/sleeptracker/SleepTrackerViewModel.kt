@@ -23,7 +23,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
-import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.*
 
 /**
@@ -46,7 +45,7 @@ class SleepTrackerViewModel(
      *
      * By default, all coroutines started in uiScope will launch in [Dispatchers.Main] which is
      * the main thread on Android. This is a sensible default because most coroutines started by
-     * a [ViewModel] update the UI after performing some processing.
+     * a ViewModel update the UI after performing some processing.
      */
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
@@ -83,6 +82,9 @@ class SleepTrackerViewModel(
     }
 
     /**
+     * Event property for `Show a snackbar stating that all sleep records in the db
+     * have been deleted.`
+     *
      * Request a toast by setting this value to true.
      *
      * This is private because we don't want to expose setting this value to the Fragment.
@@ -96,31 +98,33 @@ class SleepTrackerViewModel(
         get() = _showSnackbarEvent
 
     /**
-     * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
+     * Reset the event property for showing the snackbar; signals that we're done showing the
+     * snackbar for `All sleep night records have been deleted.`
      *
-     * This is private because we don't want to expose setting this value to the Fragment.
-     */
-
-    private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
-    /**
-     * Call this immediately after calling `show()` on a toast.
+     * Call this immediately after calling `show()` on a toast/snackbar.
      *
      * It will clear the toast request, so if the user rotates their phone it won't show a duplicate
      * toast.
-     */
-
+    */
     fun doneShowingSnackbar() {
         _showSnackbarEvent.value = false
     }
 
     /**
-     * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
+     * Variable that tells the Fragment to navigate to a specific SleepQualityFragment
+     *
+     * This is private because we don't want to expose setting this value to the Fragment.
+     */
+    private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
+
+    /**
+     * If this is non-null, immediately navigate to SleepQualityFragment and call doneNavigating()
      */
     val navigateToSleepQuality: LiveData<SleepNight>
         get() = _navigateToSleepQuality
 
     /**
-     * Call this immediately after navigating to [SleepQualityFragment]
+     * Call this immediately after navigating to SleepQualityFragment
      *
      * It will clear the navigation request, so if the user rotates their phone it won't navigate
      * twice.
@@ -129,21 +133,30 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
-    val navigateToSleepDataQuality
-        get() = _navigateToSleepDataQuality
+    /**
+     * Event properties for `should navigate to the SleepDetailFragment`
+     */
+    private val _navigateToSleepDetails = MutableLiveData<Long>()
+    val navigateToSleepDetails
+        get() = _navigateToSleepDetails
 
+    /**
+     * Public method for resetting the event property for `should navigate to SleepDetailFragment`.
+     * Signals that we're done w/ navigating.
+     * */
+    fun onSleepDetailsNavigated() {
+        _navigateToSleepDetails.value = null
+    }
+
+    /**
+     * Public event handler for when a sleep night is clicked in the UI (in the RecyclerView)
+     *
+     * @param id The SleepNight ID that was clicked in the UI
+     */
     fun onSleepNightClicked(id: Long) {
-        _navigateToSleepDataQuality.value = id
+        _navigateToSleepDetails.value = id
     }
 
-    fun onSleepDataQualityNavigated() {
-        _navigateToSleepDataQuality.value = null
-    }
-
-    init {
-        initializeTonight()
-    }
 
     private fun initializeTonight() {
         uiScope.launch {
@@ -168,18 +181,36 @@ class SleepTrackerViewModel(
         }
     }
 
+    /**
+     * Deletes all the sleep night records in the database
+     */
     private suspend fun clear() {
         withContext(Dispatchers.IO) {
             database.clear()
         }
     }
 
+    /**
+     * Updates a single SleepNight record in the db.
+     * Used for updating the sleep recording's end time, when the user has tapped
+     * on the STOP button.
+     *
+     * @param night The SleepNight object (= sleep record) we want to update.
+     * */
     private suspend fun update(night: SleepNight) {
         withContext(Dispatchers.IO) {
             database.update(night)
         }
     }
 
+    /**
+     * Creates a new sleep record in the database.
+     * Used when the user has tapped on the START button.
+     * The start- and end time will be the same in this case.
+     *
+     * @param night A SleepNight object reference for the new sleep record we want to create in
+     * the database
+     */
     private suspend fun insert(night: SleepNight) {
         withContext(Dispatchers.IO) {
             database.insert(night)
