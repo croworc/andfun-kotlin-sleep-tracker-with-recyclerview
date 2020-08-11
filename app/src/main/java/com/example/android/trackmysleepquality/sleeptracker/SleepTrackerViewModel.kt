@@ -53,11 +53,8 @@ class SleepTrackerViewModel(
 
     val nights = database.getAllNights()
 
-    /**
-     * Converted nights to Spanned for displaying.
-     */
-    val nightsString = Transformations.map(nights) { nights ->
-        formatNights(nights, application.resources)
+    init {
+        initializeTonight()
     }
 
     /**
