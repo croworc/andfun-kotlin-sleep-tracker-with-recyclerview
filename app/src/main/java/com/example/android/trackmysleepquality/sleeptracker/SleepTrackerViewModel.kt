@@ -23,7 +23,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.example.android.trackmysleepquality.database.SleepDatabaseDao
 import com.example.android.trackmysleepquality.database.SleepNight
-import com.example.android.trackmysleepquality.formatNights
 import kotlinx.coroutines.*
 
 /**
@@ -54,7 +53,12 @@ class SleepTrackerViewModel(
 
     val nights = database.getAllNights()
 
-        /**
+    init {
+        initializeTonight()
+    }
+
+
+    /**
      * If tonight has not been set, then the START button should be visible.
      */
     val startButtonVisible = Transformations.map(tonight) {
@@ -88,12 +92,16 @@ class SleepTrackerViewModel(
     val showSnackBarEvent: LiveData<Boolean>
         get() = _showSnackbarEvent
 
+    /** Public function to signal `done w/ showing the Snackbar for "all records deleted" ` */
+    fun doneShowingSnackbar() {
+        _showSnackbarEvent.value = false
+    }
+
     /**
      * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
      *
      * This is private because we don't want to expose setting this value to the Fragment.
      */
-
     private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
     /**
      * Call this immediately after calling `show()` on a toast.
@@ -101,10 +109,6 @@ class SleepTrackerViewModel(
      * It will clear the toast request, so if the user rotates their phone it won't show a duplicate
      * toast.
      */
-
-    fun doneShowingSnackbar() {
-        _showSnackbarEvent.value = false
-    }
 
     /**
      * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
@@ -122,21 +126,19 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
-    val navigateToSleepDataQuality
-        get() = _navigateToSleepDataQuality
+    /* Event properties for `should navigate to SleepDetailFragment` */
+    private val _navigateToSleepDetails = MutableLiveData<Long>()
+    val navigateToSleepDetails
+        get() = _navigateToSleepDetails
+    /* Public function to signal `done w/ navigating to SleepDetailFragment` */
+    fun onSleepDetailsNavigated() {
+        _navigateToSleepDetails.value = null
+    }
 
     fun onSleepNightClicked(id: Long) {
-        _navigateToSleepDataQuality.value = id
+        _navigateToSleepDetails.value = id
     }
 
-    fun onSleepDataQualityNavigated() {
-        _navigateToSleepDataQuality.value = null
-    }
-
-    init {
-        initializeTonight()
-    }
 
     private fun initializeTonight() {
         uiScope.launch {
