@@ -31,6 +31,9 @@ import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepTrackerBinding
 import com.google.android.material.snackbar.Snackbar
 
+// Constant for the number of columns in the grid
+private const val SPAN_COUNT = 3
+
 // Constants for the header item and data item span counts
 private const val POSITION_HEADER       = 0
 private const val SPAN_COUNT_HEADER     = 3
@@ -111,7 +114,7 @@ class SleepTrackerFragment : Fragment() {
             }
         })
 
-        val manager = GridLayoutManager(activity, 3)
+        val manager = GridLayoutManager(activity, SPAN_COUNT)
         binding.sleepList.layoutManager = manager
 
         manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
