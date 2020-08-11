@@ -37,7 +37,7 @@ private const val ITEM_VIEW_TYPE_ITEM   = 1
 
 // COMPLETED (03) In ListAdapter<>, replace SleepNight with DataItem
 // and SleepNightAdapter.ViewHolder with RecyclerView.ViewHolder.
-class SleepNightAdapter(val clickListener: SleepNightListener):
+class SleepNightAdapter(private val clickListener: SleepNightListener):
         ListAdapter<DataItem, RecyclerView.ViewHolder>(SleepNightDiffCallback()) {
 
     // COMPLETED (09) Define a CoroutineScope with Dispatchers.Default.
@@ -134,7 +134,7 @@ class SleepNightDiffCallback : DiffUtil.ItemCallback<DataItem>() {
         return if (oldItem is DataItem.Header && newItem is DataItem.Header) {
             true
         } else if (oldItem is DataItem.SleepNightItem && newItem is DataItem.SleepNightItem) {
-            oldItem  as DataItem.SleepNightItem == newItem as DataItem.SleepNightItem
+            oldItem  == newItem
         } else false
     }
 
