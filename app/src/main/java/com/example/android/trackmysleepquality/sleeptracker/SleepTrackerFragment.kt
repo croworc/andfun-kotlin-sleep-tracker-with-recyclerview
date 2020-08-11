@@ -31,6 +31,11 @@ import com.example.android.trackmysleepquality.database.SleepDatabase
 import com.example.android.trackmysleepquality.databinding.FragmentSleepTrackerBinding
 import com.google.android.material.snackbar.Snackbar
 
+// Constants for the header item and data item span counts
+private const val POSITION_HEADER       = 0
+private const val SPAN_COUNT_HEADER     = 3
+private const val SPAN_COUNT_SLEEP_ITEM = 1
+
 /**
  * A fragment with buttons to record start and end times for sleep, which are saved in
  * a database. Cumulative data is displayed in a RecyclerView.
@@ -111,17 +116,30 @@ class SleepTrackerFragment : Fragment() {
 
         manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int) =  when (position) {
-                0 -> 3
-                else -> 1
+                POSITION_HEADER -> SPAN_COUNT_HEADER
+                else            -> SPAN_COUNT_SLEEP_ITEM
             }
         }
 
+        /*
+        * Make a new adapter for the RecyclerView.
+        *
+        * We need to pass it a custom click listener for when any sleep night in the UI
+        * (in the RecyclerView) is clicked.
+        * That click listener in turn gets passed a lambda which calls an event handler
+        * defined in the SleepTrackerFragment's view model.
+        *  */
         val adapter = SleepNightAdapter(SleepNightListener { nightId ->
             sleepTrackerViewModel.onSleepNightClicked(nightId)
         })
 
         binding.sleepList.adapter = adapter
 
+        /**
+         * We add an observer for whenever the list of sleep nights has changed.
+         * The changes in the RecyclerView will then be efficiently handled by the
+         * adapter's DiffUtil callback
+         */
         sleepTrackerViewModel.nights.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.addHeaderAndSubmitList(it)
