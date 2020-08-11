@@ -53,7 +53,11 @@ class SleepTrackerViewModel(
 
     val nights = database.getAllNights()
 
-     /**
+    init {
+        initializeTonight()
+    }
+
+    /**
      * If tonight has not been set, then the START button should be visible.
      */
     val startButtonVisible = Transformations.map(tonight) {
@@ -87,23 +91,25 @@ class SleepTrackerViewModel(
     val showSnackBarEvent: LiveData<Boolean>
         get() = _showSnackbarEvent
 
+
+    /** Public event handler, signalling: `We're done w/ showing the Snackbar for
+     * "All sleep night records have been deleted" `.
+     *
+     * Call this immediately after calling `show()` on a toast/snackbar..
+     *
+     * It will clear the toast request, so if the user rotates their phone it won't show a duplicate
+     * toast.
+     */
+    fun doneShowingSnackbar() {
+        _showSnackbarEvent.value = false
+    }
+
     /**
      * Variable that tells the Fragment to navigate to a specific [SleepQualityFragment]
      *
      * This is private because we don't want to expose setting this value to the Fragment.
      */
-
     private val _navigateToSleepQuality = MutableLiveData<SleepNight>()
-    /**
-     * Call this immediately after calling `show()` on a toast.
-     *
-     * It will clear the toast request, so if the user rotates their phone it won't show a duplicate
-     * toast.
-     */
-
-    fun doneShowingSnackbar() {
-        _showSnackbarEvent.value = false
-    }
 
     /**
      * If this is non-null, immediately navigate to [SleepQualityFragment] and call [doneNavigating]
@@ -121,20 +127,25 @@ class SleepTrackerViewModel(
         _navigateToSleepQuality.value = null
     }
 
-    private val _navigateToSleepDataQuality = MutableLiveData<Long>()
-    val navigateToSleepDataQuality
-        get() = _navigateToSleepDataQuality
+    /**
+     * Event properties (private/public) for `should navigate to SleepDetailFragment`
+     */
+    private val _navigateToSleepDetails = MutableLiveData<Long>()
+    val navigateToSleepDetails
+        get() = _navigateToSleepDetails
 
+    /**
+     * Public event handler for `We're done navigating to the SleepDetailFragment`
+     */
+    fun onSleepDetailsNavigated() {
+        _navigateToSleepDetails.value = null
+    }
+
+    /**
+     * Public event handler for `A sleep night in the UI (in the RecyclerView) was clicked`
+     * */
     fun onSleepNightClicked(id: Long) {
-        _navigateToSleepDataQuality.value = id
-    }
-
-    fun onSleepDataQualityNavigated() {
-        _navigateToSleepDataQuality.value = null
-    }
-
-    init {
-        initializeTonight()
+        _navigateToSleepDetails.value = id
     }
 
     private fun initializeTonight() {
